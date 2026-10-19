@@ -21,7 +21,7 @@ function addToHistory(history: string[], text: string, limit: number) {
   }
 }
 
-function watchClipboard() {
+function watchClipboard(onHistoryChange: (history: string[]) => void) {
   let previousText = clipboard.readText();
   let history: string[] = [];
   const limit = 100;
@@ -33,9 +33,10 @@ function watchClipboard() {
       previousText = currentText;
 
       addToHistory(history, currentText, limit);
+      onHistoryChange([...history]);
     }
   }, 500);
-
+  
   return {
     stop: () => clearInterval(intervalId),
     getHistory: () => [...history],
@@ -44,11 +45,9 @@ function watchClipboard() {
 
 app.whenReady().then(() => {
   createWindow();
-  const watcher = watchClipboard();
-
-  setTimeout(() => {
-    console.log("Clipboard history:", watcher.getHistory());
-  }, 10000);
+  const watcher = watchClipboard(history => {
+    console.log("Clipboard history updated:", history);
+  });
 
   app.on("before-quit", () => {
     console.log("Clipboard watcher stopped.");
