@@ -1,4 +1,5 @@
 import { app, BrowserWindow, clipboard } from "electron";
+import { fileURLToPath } from "node:url";
 
 function createWindow() {
   const window = new BrowserWindow({
@@ -6,7 +7,7 @@ function createWindow() {
     height: 600,
   });
 
-  window.loadURL("https://example.com");
+  window.loadFile(fileURLToPath(new URL("./index.html", import.meta.url)));
 }
 
 function addToHistory(history: string[], text: string, limit: number) {
