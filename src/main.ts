@@ -1,13 +1,23 @@
-import { app, BrowserWindow, clipboard } from "electron";
+import { app, BrowserWindow, clipboard, ipcMain } from "electron";
+import path from "path";
 import { fileURLToPath } from "node:url";
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 function createWindow() {
   const window = new BrowserWindow({
     width: 800,
     height: 600,
+    webPreferences: {
+      preload: path.join(__dirname, "preload.cjs"),
+      contextIsolation: true,
+      nodeIntegration: false,
+    },
   });
 
-  window.loadFile(fileURLToPath(new URL("./index.html", import.meta.url)));
+  window.loadURL("http://localhost:5173");
+  window.webContents.openDevTools();
 }
 
 function addToHistory(history: string[], text: string, limit: number) {
