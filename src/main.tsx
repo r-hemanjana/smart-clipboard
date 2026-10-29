@@ -1,36 +1,30 @@
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { createRoot } from "react-dom/client";
 
 function App() {
-  const [history, setHistory] = useState<string[]>([
-    "Hello world",
-    "npm run dev:ui",
-    "https://example.com",
-  ]);
+  const [history, setHistory] = useState<string[]>([]);
+  const [appName, setAppName] = useState<string>("");
+
+  useEffect(() => {
+    window.clipboardAPI.getAppName().then(setAppName);
+    window.clipboardAPI.getHistory().then(setHistory);
+  }, []);
 
   return (
     <main style={{ padding: "24px", fontFamily: "sans-serif" }}>
-        <h3> App version: {window.clipboardAPI.getAppVersion()}</h3>
-      <h1>Smart Clipboard</h1>
-      <p>Your recent copies</p>
+      <h1>{appName || "Loading..."}</h1>
+      <h2>Clipboard history</h2>
 
       {history.length === 0 ? (
-        <p>No clipboard history yet.</p>
+        <p>No clipboard history yet. Copy some text!</p>
       ) : (
         <ul>
           {history.map((text, index) => (
-            <li key={`${text}-${index}`} style={{ marginBottom: "8px" }}>
-              {text}
-            </li>
+            <li key={`${text}-${index}`}>{text}</li>
           ))}
         </ul>
       )}
-
-      <button onClick={() => setHistory([])}>Clear history</button>
-      <button onClick={() => setHistory(["New copied text", ...history])}>
-        Add sample
-      </button>
     </main>
   );
 }

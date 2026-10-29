@@ -3,7 +3,8 @@ export {};
 declare global {
   interface Window {
     clipboardAPI: {
-      getAppVersion: () => string;
+      getAppName: () => Promise<string>;
+      getHistory: () => Promise<string[]>;
     };
   }
 }

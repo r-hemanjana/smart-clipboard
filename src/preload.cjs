@@ -1,6 +1,7 @@
-const { contextBridge } = require("electron");
+const { contextBridge, ipcRenderer } = require("electron");
 
 // expose API to react world
 contextBridge.exposeInMainWorld("clipboardAPI", {
-  getAppVersion: () => "1.0.0",
+  getAppName: () => ipcRenderer.invoke("app:get-name"),
+  getHistory: () => ipcRenderer.invoke("clipboard:get-history"),
 });

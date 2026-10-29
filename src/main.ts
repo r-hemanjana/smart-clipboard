@@ -20,6 +20,10 @@ function createWindow() {
   window.webContents.openDevTools();
 }
 
+ipcMain.handle("app:get-name", () => {
+  return "Smart Clipboard";
+});
+
 function addToHistory(history: string[], text: string, limit: number) {
   const existingIndex = history.indexOf(text);
   if (!text) return;
@@ -58,6 +62,10 @@ app.whenReady().then(() => {
   createWindow();
   const watcher = watchClipboard(history => {
     console.log("Clipboard history updated:", history);
+  });
+
+  ipcMain.handle("clipboard:get-history", () => {
+    return watcher.getHistory();
   });
 
   app.on("before-quit", () => {
